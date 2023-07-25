@@ -4,15 +4,21 @@ from threading import Thread
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 import os
+import logging
 import re
 
+# Configure the logging module
+logging.basicConfig(level=logging.INFO, filename='output_log.txt', filemode='w',
+                    format='%(asctime)s - %(levelname)s - %(message)s')
+
+
 class Downloader:
-    downloadUrl = "https://www.lexaloffle.com/bbs/cposts/ne/{cartId}.png"
+    downloadUrl = "https://lexaloffle.com/bbs/?tid={cartId}"
 
     def __init__(self, threadCount, workRange):
         """
         :param threadCount: Amount of threads to use, sane amounts are between 1 and 50
-        :param workRange: Range of ids to check for. for example: (0, 105000)
+        :param workRange: Range of id's to check for. for example: (0, 105000)
         """
         self.threadCount = threadCount
         self.workRange = workRange
@@ -31,24 +37,40 @@ class Downloader:
             except requests.RequestException:
                 pass
 
+    def get_title(self, cartId):
+        r = self.request(self.downloadUrl.format(cartId=cartId))
+        if r is not None and r.ok:
+            soup = BeautifulSoup(r.text, "html.parser")
+            title_element = soup.find("title")
+            if title_element:
+                title = re.sub(r'[^\w\s-]', '', title_element.get_text().strip())
+                return title
+
+        return None
+
     def download(self, cartId):
+        title = self.get_title(cartId)
+        if not title:
+            return
+
         # Visit the threadId
         r = self.request(self.downloadUrl.format(cartId=cartId))
         if r is None or not r.ok:
             return
 
-        # Extract the cart file link from the response text using regex
-        cartFile_match = re.search(r'print_cart_code\("([^"]+)"', r.text)
-        if cartFile_match:
-            link = cartFile_match.group(1)
-        else:
+        # Scrape the image file link
+        soup = BeautifulSoup(r.text, "html.parser")
+        cartFile = soup.find("a", {"title": "Open Cartridge File"})
+        if cartFile is None:
             return
+        link = f"https://lexaloffle.com{cartFile['href']}"
 
         # Try getting the image file
         r = self.request(link)
         if r is None or not r.ok:
             return
-        self.save(content=r.content, filename=os.path.basename(link))
+        self.save(content=r.content, filename=f"{title}-{cartId}.p8.png")
+        logging.info(f"Downloaded cartId {cartId}")
 
     @staticmethod
     def save(content, filename):
@@ -58,7 +80,8 @@ class Downloader:
     # Main function for fetching an id and downloading it
     def loop(self):
         while not self.queue.empty():
-            self.download(cartId=self.queue.get())
+            cartId = self.queue.get()
+            self.download(cartId=cartId)
             self.progress.update(1)
             self.queue.task_done()
 
@@ -81,3 +104,9 @@ class Downloader:
 
         [self.queue.put(x) for x in range(*self.workRange)]
         self.startThreads()
+
+
+# Example usage
+if __name__ == "__main__":
+    downloader = Downloader(threadCount=10, workRange=(0, 10000))
+    downloader.run()
