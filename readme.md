@@ -6,10 +6,16 @@ Fork and update to Walter-o's original code.
 Thanks to Walter-o for putting this together.
 Update to the original code:
 Fixed the downloadUrl to reflect the recent changes to the lexaloffle.com BBS.
-used regex to extract the cart file link.
+During the scrapping process to look for the URL for the cart, I also have it grabbing rhe <TITLE> and apending it
+to the begining of the file name. This really helped with the carts with 4233454.p8.png as a name.
+Added verbose logging to a text file to catch errors and to see the last cartID downloaded.
+
+To add:
+I want to add a "resume" function so it will start with the last cartID it downloaded and continue on.
   
-  A tool that can download all uploaded pico8 cart files.<br><br>
-  
+
+Install Process:
+
 Step 1: Have python and pip installed<br>
 Step 2 (optional): open a virtual environment<br>
 Step 3: <code>pip install requirements.txt</code><br>
