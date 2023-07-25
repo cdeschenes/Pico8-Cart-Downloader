@@ -4,14 +4,15 @@ from threading import Thread
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 import os
+import re
 
 class Downloader:
-    downloadUrl = "https://lexaloffle.com/bbs/?pid={cartId}"
+    downloadUrl = "https://www.lexaloffle.com/bbs/cposts/ne/{cartId}.png"
 
     def __init__(self, threadCount, workRange):
         """
         :param threadCount: Amount of threads to use, sane amounts are between 1 and 50
-        :param workRange: Range of id's to check for. for example: (0, 105000)
+        :param workRange: Range of ids to check for. for example: (0, 105000)
         """
         self.threadCount = threadCount
         self.workRange = workRange
@@ -36,12 +37,12 @@ class Downloader:
         if r is None or not r.ok:
             return
 
-        # Scrape the image file link
-        soup = BeautifulSoup(r.text, "html.parser")
-        cartFile = soup.find("a", {"title": "Open Cartridge File"})
-        if cartFile is None:
+        # Extract the cart file link from the response text using regex
+        cartFile_match = re.search(r'print_cart_code\("([^"]+)"', r.text)
+        if cartFile_match:
+            link = cartFile_match.group(1)
+        else:
             return
-        link = f"https://lexaloffle.com{cartFile['href']}"
 
         # Try getting the image file
         r = self.request(link)
