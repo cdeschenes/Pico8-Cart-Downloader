@@ -1,9 +1,12 @@
 <div style="color:#AAFFFF">
-NOT WORKING YET
-  
 Fork and update to Walter-o's original code.
 
-Thanks to Walter-o for putting this together.
+This will scrape and download cartriges (p8.png) from the lexaloffle BBS for PICO-8 games.
+
+This is strickly to preserve the games that are available on the BBS.
+
+Thanks to Walter-o for putting this together!
+
 Update to the original code:
 Fixed the downloadUrl to reflect the recent changes to the lexaloffle.com BBS.
 During the scrapping process to look for the URL for the cart, I also have it grabbing rhe <TITLE> and apending it
