@@ -1,26 +1,23 @@
 <div style="color:#AAFFFF">
-Fork and update to Walter-o's original code.
 
-This will scrape and download cartriges (p8.png) from the lexaloffle BBS for PICO-8 games.
+<h1>Fork and Update to Walter-o's Original Code</h1>
 
-This is strickly to preserve the games that are available on the BBS.
+<p>The purpose of this project is to scrape and download cartridges (p8.png) from the Lexaloffle BBS for PICO-8 games. The primary goal is to preserve the games available on the BBS.</p>
 
-Thanks to Walter-o for putting this together!
+<p>Special thanks to Walter-o for creating this code!</p>
 
-Update to the original code:
-Fixed the downloadUrl to reflect the recent changes to the lexaloffle.com BBS.
-During the scrapping process to look for the URL for the cart, I also have it grabbing rhe <TITLE> and apending it
-to the begining of the file name. This really helped with the carts with 4233454.p8.png as a name.
-Added verbose logging to a text file to catch errors and to see the last cartID downloaded.
+<h2>Update to the original code:</h2>
+<p>I have fixed the <code>downloadUrl</code> to accommodate recent changes on lexaloffle.com BBS. Additionally, while scraping for the cart's URL, I now also retrieve the <code>&lt;TITLE&gt;</code> tag and append it to the beginning of the file name. This proves especially useful for carts with names like "4233454.p8.png."</p>
+<p>Moreover, I have added verbose logging to a text file to capture errors and track the last downloaded cartID.</p>
 
-To add:
-I want to add a "resume" function so it will start with the last cartID it downloaded and continue on.
-  
+<h2>Upcoming Addition:</h2>
+<p>I plan to implement a "resume" function that will start the download process from the last cartID downloaded, allowing for seamless continuation.</p>
 
-Install Process:
-
-Step 1: Have python and pip installed<br>
-Step 2 (optional): open a virtual environment<br>
-Step 3: <code>pip install requirements.txt</code><br>
-Step 4: Edit <code>start.py</code> to your needs<br>
-Step 5: <code>python3 start.py</code><br><br>
+<h2>Installation Process:</h2>
+<ol>
+  <li>Ensure that Python and pip are installed.</li>
+  <li>(Optional) Create and activate a virtual environment.</li>
+  <li>Run the command <code>pip install -r requirements.txt</code> to install necessary dependencies.</li>
+  <li>Customize <code>start.py</code> according to your requirements.</li>
+  <li>Execute <code>python3 start.py</code> to begin the process.</li>
+</ol>
